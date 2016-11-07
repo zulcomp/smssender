@@ -1,0 +1,77 @@
+<userInput>
+    <panel order="0">
+        <field size="2" txt="Select Java Runtime Environment" type="title"/>
+        <field align="left" txt="Please browse for Java Runtime installation directory" type="staticText"/>
+            <field align="left" type="search" variable="jre_install">
+                <spec size="50" txt="Path to Java Runtime:" checkfilename="lib/rt.jar" type="directory" result="directory">
+                    <choice value="/usr/lib/java/" os="unix" />
+                    <choice value="/usr/bin/java/" os="unix" />
+                    <choice value="/app/java/" os="unix" />
+                    <choice value="C:\Program Files\Java\jre7" os="windows" />
+                    <choice value="C:\Program Files (x86)\Java\jre7" os="windows" />
+                </spec>
+                <validator
+                    class="com.izforge.izpack.util.NotEmptyValidator" txt="Enter JRE Installation"/>
+            </field>
+        
+        </panel>
+        <panel order="1"> 
+        <field size="2" txt="Select Communication Port" type="title"/>
+        
+		<field align="left" txt="COM Port" type="staticText" />
+        <field type="combo" variable="mdm_com_port" conditionid="izpack.windowsinstall">
+            <spec txt="Modem COM Port" >
+                <choice set="true" txt="COM1" value="COM1"/>
+                <choice txt="COM2" value="COM2"/>
+                <choice txt="COM3" value="COM3"/>
+                <choice txt="COM4" value="COM4"/>
+                <choice txt="COM5" value="COM5"/>
+                <choice txt="COM6" value="COM6"/>
+                <choice txt="COM7" value="COM7"/>
+                <choice txt="COM8" value="COM8"/>
+                <choice txt="COM9" value="COM9"/>
+                <choice txt="COM10" value="COM10"/>
+                <choice txt="COM11" value="COM11"/>
+                <choice txt="COM12" value="COM12"/>
+
+            </spec>
+        </field>
+		<field type="text" variable="mdm_com_port" conditionid="izpack.linuxinstall">
+            <spec txt="/dev/tty" size="20"/>
+        </field>
+        </panel>
+        <panel order="2"> 
+        <field size="2" txt="Database Configuration" type="title"/>
+        <field align="left" txt="Database Connection (JDBC) URL" type="staticText"/>
+		<field type="text" variable="jdbc_url">
+            <spec set="jdbc:oracle:thin:@ipaddress:1521:sid" size="50" />
+			<validator
+                class="com.izforge.izpack.util.NotEmptyValidator" txt="Enter JDBC Connection URL"/>
+        </field>
+        <field type="text" variable="dbuser">
+            <spec size="50" txt="Database Username" set=""/>
+			<validator
+                class="com.izforge.izpack.util.NotEmptyValidator" txt="Enter Database Username"/>
+        </field>
+        <field align="left" type="password" variable="dbpasswd">
+            <spec>
+                <pwd size="50" txt="Database Password" set=""/>
+                <pwd size="50" txt="Confirm Database Password" set=""/>
+            </spec>
+            <validator
+                class="com.izforge.izpack.util.PasswordEqualityValidator" txt="Both passwords must match."/>
+			<validator
+                class="com.izforge.izpack.util.NotEmptyValidator" txt="Enter Database Password"/>
+        </field>
+    </panel>
+    <panel order="3">
+        <field size="2" txt="Runtime Configuration" type="title"/>
+        <field align="left" txt="Select SMSSender Runtime Mode" type="staticText"/>
+        <field type="radio" variable="smssender_mode">
+            <spec>
+                <choice txt="Run via scheduler only" id="radio.label.1" value="1" />
+                <choice set="true" txt="Run via scheduler and as a server" id="radio.label.2" value="2" />
+            </spec>
+        </field>
+    </panel>
+</userInput>

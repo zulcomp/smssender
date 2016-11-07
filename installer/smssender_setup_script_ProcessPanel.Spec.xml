@@ -1,0 +1,42 @@
+<processing>
+ <!--   
+  <job name="Copying Comm API to JRE Windows">
+    <os family="windows" />
+    <executefile name="$INSTALL_PATH/scripts/copycommapi.bat" />
+  </job>
+  <job name="Copying Comm API to JRE Linux">
+    <os family="unix" />
+    <executefile name="$INSTALL_PATH/scripts/copycommapi.sh" />
+  </job>
+  -->
+  <job name="Copying RXTX API to JRE Windows">
+    <os family="windows" />
+    <executefile name="$INSTALL_PATH/scripts/copyrxtx.bat" />
+  </job>
+  <job name="Copying RXTX API to JRE Linux">
+    <os family="unix" />
+    <executefile name="$INSTALL_PATH/scripts/copyrxtx.sh" />
+  </job>
+  <job name="Creating Job Scheduler">
+    <os family="windows" />
+    <executefile name="$INSTALL_PATH/scripts/createjob.cmd" />
+  </job>
+  <job name="Creating CRON Jobs">
+    <os family="unix" />
+    <executefile name="$INSTALL_PATH/scripts/createjob.sh" />
+  </job>
+  <job name="Setup SMSSender runtime config">
+      <os family="windows" />
+      <executefile name="$INSTALL_PATH/smssender.bat" >
+          <arg>config</arg>
+          <arg>$smssender_mode</arg>
+      </executefile>
+  </job>
+  <job name="Setup SMSSender runtime config">
+      <os family="unix" />
+      <executefile name="$INSTALL_PATH/smssender.sh" >
+          <arg>config</arg>
+          <arg>$smssender_mode</arg>
+      </executefile>
+  </job>
+</processing>

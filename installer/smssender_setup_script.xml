@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<installation version="1.0">
+    <info>
+        <appname>SmsSender</appname>
+        <appversion>1.1</appversion>
+        <authors>
+            <author email="zulcom@gmail.com" name="Faizul Bin Ngsrimin"/>
+        </authors>
+        <url>http://zulsoft-codeblogs.blogspot.com/</url>
+        <uninstaller name="Uninstaller.jar" write="yes"/>
+        <javaversion>1.7</javaversion>
+        <requiresjdk>no</requiresjdk>
+        <writeinstallationinformation>yes</writeinstallationinformation>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+    </info>
+    <guiprefs height="600" resizable="yes" width="800">
+        <modifier key="useFlags" value="yes"/>
+        <modifier key="langDisplayType" value="default"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+	<resources>
+        <res id="userInputSpec.xml" src="@{basedir}/smssender_setup_script_userInputSpec.xml" />
+		<res id="ProcessPanel.Spec.xml" src="smssender_setup_script_ProcessPanel.Spec.xml" />
+		<res id="TargetPanel.dir.windows" src="defaultInstallDirWin.txt" />
+		<res id="TargetPanel.dir.linux" src="defaultInstallDirLinux.txt" />
+    </resources>
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="DefaultTargetPanel"/>
+		<panel classname="UserInputPanel" id="UserInputPanel.0"/>
+        <panel classname="UserInputPanel" id="UserInputPanel.1"/>
+        <panel classname="UserInputPanel" id="UserInputPanel.2"/>
+        <panel classname="UserInputPanel" id="UserInputPanel.3"/>
+        <panel classname="InstallPanel"/>
+		<panel classname="ProcessPanel" />
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    <packs>
+        <pack name="Installing Required Package" preselected="yes" required="yes">
+            <description/>
+			<!--core file and lib dir -->
+            <file override="update" src="./smssender.bat" targetdir="$INSTALL_PATH/">
+				<os family="windows"/>
+			</file>
+            <file override="update" src="./smssender.jar" targetdir="$INSTALL_PATH/"/>
+            <file override="update" src="./smssender.properties" targetdir="$INSTALL_PATH/"/>
+            <file override="update" src="./smssender.sh" targetdir="$INSTALL_PATH/">
+				<os family="unix"/>
+			</file>
+<!--
+            <file override="update" src="./scripts/copycommapi.bat" targetdir="$INSTALL_PATH/scripts/">
+				<os family="windows"/>
+			</file>
+            <file override="update" src="./scripts/copycommapi.sh" targetdir="$INSTALL_PATH/scripts/">
+				<os family="unix"/>
+			</file>
+-->
+            <file override="update" src="./scripts/copyrxtx.bat" targetdir="$INSTALL_PATH/scripts/">
+				<os family="windows"/>
+			</file>
+            <file override="update" src="./scripts/copyrxtx.sh" targetdir="$INSTALL_PATH/scripts/">
+				<os family="unix"/>
+			</file>
+
+			<file override="update" src="./scripts/createjob.cmd" targetdir="$INSTALL_PATH/scripts/">
+				<os family="windows"/>
+			</file>
+            <file override="update" src="./scripts/createScheduler.vbs" targetdir="$INSTALL_PATH/scripts/">
+				<os family="windows"/>
+			</file>
+			<file override="update" src="./scripts/createjob.sh" targetdir="$INSTALL_PATH/scripts/">
+				<os family="unix"/>
+			</file>
+            <file override="update" src="./scripts/createjob.txt" targetdir="$INSTALL_PATH/scripts/">
+				<os family="unix"/>
+			</file>
+            <file override="update" src="./scripts/smssender_config.bat" targetdir="$INSTALL_PATH/scripts/">
+				<os family="windows"/>
+			</file>
+
+			<file override="update" src="./lib" targetdir="$INSTALL_PATH/"/>
+            <!-- comm api win32 
+			<file override="update" src="./commapi_win/x86/win32com.dll" targetdir="$INSTALL_PATH/commapi/">
+				<os family="windows" />
+			</file>
+			<file override="update" src="./commapi_win/x86/comm.jar" targetdir="$INSTALL_PATH/commapi/">
+				<os family="windows" />
+			</file>
+			<file override="update" src="./commapi_win/x86/javax.comm.properties" targetdir="$INSTALL_PATH/commapi/">
+				<os family="windows" />
+			</file>
+			-->
+			<file override="update" src="./rxtx_win/x86/rxtxSerial.dll" targetdir="$INSTALL_PATH/rxtx/">
+				<os family="windows" />
+			</file>
+			<file override="update" src="./rxtx_win/x86/rxtxParallel.dll" targetdir="$INSTALL_PATH/rxtx/">
+				<os family="windows" />
+			</file>
+			<!-- comm api linux 32bit 
+			<file override="update" src="./commapi_linux/x86/libLinuxSerialParallel.so" targetdir="$INSTALL_PATH/commapi/">
+				<os family="unix" arch="i686"/>
+				<os family="unix" arch="i586"/>
+				<os family="unix" arch="i386"/>
+			</file>
+			<file override="update" src="./commapi_linux/x86/javax.comm.properties" targetdir="$INSTALL_PATH/commapi/">
+				<os family="unix" arch="i686"/>
+				<os family="unix" arch="i586"/>
+				<os family="unix" arch="i386"/>
+				<os family="unix" arch="x86"/>
+			</file>
+			<file override="update" src="./commapi_linux/x86/comm.jar" targetdir="$INSTALL_PATH/commapi/">
+				<os family="unix" arch="i686"/>
+				<os family="unix" arch="i586"/>
+				<os family="unix" arch="i386"/>
+				<os family="unix" arch="x86"/>
+			</file>
+			-->
+			<file override="update" src="./rxtx_linux/x86/librxtxParallel.so" targetdir="$INSTALL_PATH/rxtx/">
+				<os family="unix" arch="i686"/>
+				<os family="unix" arch="i586"/>
+				<os family="unix" arch="i386"/>
+				<os family="unix" arch="x86"/>
+			</file>
+			<file override="update" src="./rxtx_linux/x86/librxtxSerial.so" targetdir="$INSTALL_PATH/rxtx/">
+				<os family="unix" arch="i686"/>
+				<os family="unix" arch="i586"/>
+				<os family="unix" arch="i386"/>
+				<os family="unix" arch="x86"/>
+			</file>
+			
+			<!-- comm api linux 64bit 
+			<file override="update" src="./commapi_linux/x64/libLinuxSerialParallel.so" targetdir="$INSTALL_PATH/commapi/">
+				<os family="unix" arch="x64"/>
+				<os family="unix" arch="x86_64"/>
+				<os family="unix" arch="amd64"/>
+			</file>
+			<file override="update" src="./commapi_linux/x64/javax.comm.properties" targetdir="$INSTALL_PATH/commapi/">
+				<os family="unix" arch="x64"/>
+				<os family="unix" arch="x86_64"/>
+				<os family="unix" arch="amd64"/>
+			</file>
+			<file override="update" src="./commapi_linux/x64/comm.jar" targetdir="$INSTALL_PATH/commapi/">
+				<os family="unix" arch="x64"/>
+				<os family="unix" arch="x86_64"/>
+				<os family="unix" arch="amd64"/>
+			</file>
+			-->
+			<file override="update" src="./rxtx_linux/x64/librxtxSerial.so" targetdir="$INSTALL_PATH/rxtx/">
+				<os family="unix" arch="x64"/>
+				<os family="unix" arch="x86_64"/>
+				<os family="unix" arch="amd64"/>
+			</file>
+            <parsable targetfile="$INSTALL_PATH/smssender.bat" type="plain">
+                <os family="windows"/>
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/smssender.properties" type="plain"/>
+			<parsable targetfile="$INSTALL_PATH/smssender.sh" type="plain" >
+			    <os family="unix"/>
+            </parsable>
+<!--
+            <parsable targetfile="$INSTALL_PATH/scripts/copycommapi.bat" type="plain">
+			    <os family="windows"/>
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/scripts/copycommapi.sh" type="plain">
+                    <os family="unix"/>
+            </parsable>
+-->
+            <parsable targetfile="$INSTALL_PATH/scripts/copyrxtx.bat" type="plain">
+			    <os family="windows"/>
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/scripts/copyrxtx.sh" type="plain">
+                    <os family="unix"/>
+            </parsable>
+			
+            <parsable targetfile="$INSTALL_PATH/scripts/createjob.cmd" type="plain">
+                    <os family="windows"/>
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/scripts/createScheduler.vbs" type="plain">
+                    <os family="windows"/>
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/scripts/createjob.sh" type="plain">
+                    <os family="unix"/>
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/scripts/createjob.txt" type="plain">
+                    <os family="unix"/>
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/scripts/smssender_config.bat" type="plain">
+                    <os family="windows"/>
+            </parsable>
+			<!--
+            <parseble targetfile="$INSTALL_PATH/commapi/javax.comm.properties" type="plain"/>
+			-->
+        </pack>
+    </packs>
+</installation>
