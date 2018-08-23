@@ -20,20 +20,8 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
-
-//import javax.comm.CommDriver;
-//import javax.comm.CommPortIdentifier;
-//import javax.comm.CommPortOwnershipListener;
-//import javax.comm.NoSuchPortException;
-//import javax.comm.PortInUseException;
-//import javax.comm.SerialPort;
-//import javax.comm.SerialPortEvent;
-//import javax.comm.SerialPortEventListener;
-//import javax.comm.UnsupportedCommOperationException;
-
-import org.apache.log4j.Logger;
-
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
 A class that handles the details of a serial connection. 
@@ -42,7 +30,7 @@ Holds the state of the connection.
 public class SerialConnection implements SerialPortEventListener,
         CommPortOwnershipListener {
 
-    private static final Logger LOGGER = Logger.getLogger("my.com.zulsoft.sms.common");
+    private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.common");
     private final SerialParameters parameters;
     private OutputStream os;
     private InputStream is;

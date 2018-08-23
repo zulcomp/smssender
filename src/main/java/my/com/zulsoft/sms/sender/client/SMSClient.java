@@ -7,16 +7,17 @@ package my.com.zulsoft.sms.sender.client;
 
 import my.com.zulsoft.sms.sender.common.Sender;
 import my.com.zulsoft.sms.sender.common.SerialParameters;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.HashMap;
 import java.util.ListIterator;
+import org.apache.logging.log4j.LogManager;
 
 public class SMSClient implements Runnable
 {
-    private static final Logger LOGGER = Logger.getLogger("my.com.zulsoft.sms.client");
+    private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.sender.client");
     private final ArrayList changeListenerObj;
     public final static int SYNCHRONOUS = 0;
     public final static int ASYNCHRONOUS = 1;

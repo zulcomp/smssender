@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -23,7 +24,7 @@ import org.eclipse.jetty.server.Server;
  */
 class SmsSenderWorker extends Thread implements SMSSendStatusChangeListener {
 
-    private static final Logger LOGGER = Logger.getLogger("my.com.zulsoft.sms.server");
+    private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.sender.server");
 
     Properties param;
     DBConnection dbconn;
@@ -53,10 +54,8 @@ class SmsSenderWorker extends Thread implements SMSSendStatusChangeListener {
                     int exitVal = p.waitFor();
                     LOGGER.info("Finished Process with exit code: " + exitVal);
 
-                } catch (IOException ex) {
+                } catch (IOException | InterruptedException ex) {
                     LOGGER.info(ex.getLocalizedMessage());
-                } catch (InterruptedException ie) {
-                    LOGGER.info(ie.getLocalizedMessage());
                 }
                 //check database if msssage has been send
                 String sql = "SELECT SEND_IND FROM SMSMSHIST WHERE SMSMSHIST_ID=?";
@@ -143,8 +142,8 @@ class SmsSenderWorker extends Thread implements SMSSendStatusChangeListener {
         if (!rset.isEmpty()) {
             if (rset.size() == 1) {
                 HashMap m = (HashMap) rset.get(0);
-                mobileNum = (String) m.get(new Integer(1)); //MOBILE_PHONE
-                message = (String) m.get(new Integer(2)); // SMSMSHIST_MESSAGE
+                mobileNum = (String) m.get(1); //MOBILE_PHONE
+                message = (String) m.get(2); // SMSMSHIST_MESSAGE
                 LOGGER.info("mobile_Number=" + mobileNum);
                 LOGGER.info("message=" + message);
                 message = message.replace("\\r\\n", String.valueOf(((char) 13)));
@@ -209,7 +208,7 @@ class SmsSenderWorker extends Thread implements SMSSendStatusChangeListener {
 
 public class SmsSenderServer {
 
-    private static final Logger LOGGER = Logger.getLogger("my.com.zulsoft.sms.server");
+    private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.sender.server");
     private Properties p;
     private int httpPort = 8888;
     private Server server;

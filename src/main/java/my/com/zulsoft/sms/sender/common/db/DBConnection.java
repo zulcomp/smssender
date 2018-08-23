@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import oracle.jdbc.pool.OracleDataSource;
-
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 public class DBConnection {
 
     private Connection conn;
@@ -42,53 +42,57 @@ public class DBConnection {
     }
 
     public int scalaQuery(String sql, HashMap param) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.clearParameters();
-        if(param!=null) {
-            Set keys = param.keySet();
-            Iterator i = keys.iterator();
-            int idx;
-            while (i.hasNext()) {
-                String key = (String) i.next();
-                idx = Integer.parseInt(key);
-                stmt.setObject(idx, param.get(key));
+        
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.clearParameters();
+            if(param!=null) {
+                Set keys = param.keySet();
+                Iterator i = keys.iterator();
+                int idx;
+                while (i.hasNext()) {
+                    String key = (String) i.next();
+                    idx = Integer.parseInt(key);
+                    stmt.setObject(idx, param.get(key));
+                }
+                
+                stmt.executeUpdate();
+                return stmt.getUpdateCount();
             }
         }
-        stmt.executeUpdate();
-        return stmt.getUpdateCount();
+        return -1;
     }
 
     public ArrayList<HashMap> query(String sql, HashMap param) throws SQLException {
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
-
-        stmt.clearParameters();
-        if(param != null) {
-            Set keys = param.keySet();
-            Iterator iter = keys.iterator();
-            int idx;
-            String key;
-            while (iter.hasNext()) {
-                key = (String) iter.next();
-                idx = Integer.parseInt(key);
-                stmt.setObject(idx, param.get(key));
+        ArrayList<HashMap> lstResult = new ArrayList<>();
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.clearParameters();
+            if(param != null) {
+                Set keys = param.keySet();
+                Iterator iter = keys.iterator();
+                int idx;
+                String key;
+                while (iter.hasNext()) {
+                    key = (String) iter.next();
+                    idx = Integer.parseInt(key);
+                    stmt.setObject(idx, param.get(key));
+                }
+                
+                try(ResultSet rset = stmt.executeQuery()) {
+                    ResultSetMetaData rsmd = rset.getMetaData();
+                    int colcount = rsmd.getColumnCount();
+                    while(rset.next()) {
+                        HashMap hm = new HashMap();
+                        for(int c = 1; c <= colcount;c++)
+                        {
+                            Object obj = rset.getObject(c);
+                            hm.put(c, obj);
+                        }
+                        lstResult.add(hm);
+                    }
+                }
             }
         }
-        
-        ResultSet rset = stmt.executeQuery();
-        ArrayList<HashMap> lstResult = new ArrayList<HashMap>();
-        ResultSetMetaData rsmd = rset.getMetaData();
-        int colcount = rsmd.getColumnCount();
-        while(rset.next()) {
-            HashMap hm = new HashMap();
-            for(int c = 1; c <= colcount;c++)
-            {
-                Object obj = rset.getObject(c);
-                hm.put(c, obj);
-            }
-            lstResult.add(hm);
-        }
-        rset.close();
         return lstResult;
     }
 
@@ -112,22 +116,37 @@ public class DBConnection {
             return;
         }
 
-        if ("oracle".equals(drivertype)) {
-            OracleDataSource ods = new OracleDataSource();
-            ods.setURL(connstr);
-            ods.setUser(username);
-            ods.setPassword(password);
-            ods.setDriverType("thin");
-            conn = ods.getConnection();
-        } else if ("mysql".equals(drivertype)) {
-                        
-        } else {
+        if (null == drivertype) {
             //this will use Jdbc-Odbc bridge
             Properties p = new Properties();
             p.put("user", username);
             p.put("password", password);
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             conn = DriverManager.getConnection(connstr, p);
+        } else switch (drivertype) {
+            case "oracle":
+                OracleDataSource ods = new OracleDataSource();
+                ods.setURL(connstr);
+                ods.setUser(username);
+                ods.setPassword(password);
+                ods.setDriverType("thin");
+                conn = ods.getConnection();
+                break;
+            case "mysql":
+                MysqlDataSource mcpds = new MysqlDataSource();
+                mcpds.setURL(connstr);
+                mcpds.setUser(username);
+                mcpds.setPassword(password);
+                conn = mcpds.getConnection();
+                break;
+            default:
+                //this will use Jdbc-Odbc bridge
+                Properties p = new Properties();
+                p.put("user", username);
+                p.put("password", password);
+                Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+                conn = DriverManager.getConnection(connstr, p);
+                break;
         }
     }
 

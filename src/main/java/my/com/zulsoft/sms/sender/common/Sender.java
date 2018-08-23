@@ -12,18 +12,19 @@ import org.ajwcc.pduUtils.gsm3040.PduFactory;
 import org.ajwcc.pduUtils.gsm3040.PduGenerator;
 import org.ajwcc.pduUtils.gsm3040.PduUtils;
 import org.ajwcc.pduUtils.gsm3040.SmsSubmitPdu;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 
 public class Sender implements Runnable {
 
-    private static final Logger logger = Logger.getLogger("com.fsc.sm.smssender");
+    private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.sender.common");
     private static final long STANDARD = 500;
     private static final long LONG = 2000;
     private static final long VERYLONG = 20000;
     SerialConnection mySerial = null;
-    static final private char cntrlZ = (char) 26;
+    static final private char CNTRLZ = (char) 26;
     String in, out;
     Thread aThread = null;
     private long delay = STANDARD;
@@ -53,8 +54,8 @@ public class Sender implements Runnable {
         mySerial = new SerialConnection(serialParam);
         try {
             mySerial.openConnection();
-        } catch(Exception e) {
-            logger.info(e.getMessage() + " : Port Open " +  mySerial.isOpen());
+        } catch(ClassNotFoundException | IllegalAccessException | InstantiationException | SerialConnectionException e) {
+            LOGGER.info(e.getMessage() + " : Port Open " +  mySerial.isOpen());
             throw e;
         }
         aThread = new Thread(this);
@@ -70,6 +71,7 @@ public class Sender implements Runnable {
      * message / response via steps,
      * handle time out
      */
+    @Override
     public void run() {
         status = -1;
         boolean timeOut = false;
@@ -107,7 +109,7 @@ public class Sender implements Runnable {
             pdu.setDecodedText(message);
             msgRef=rnd.nextInt(254) + 1;
             pduString = pdugen.generatePduList(pdu, msgRef);
-            logger.info("PDU Strings count " + (pduString == null ? 0 : pduString.size()));
+            LOGGER.info("PDU Strings count " + (pduString == null ? 0 : pduString.size()));
 
         }
 
@@ -119,7 +121,7 @@ public class Sender implements Runnable {
             //if atz does not work, type to send cntrlZ and retry, in case a message was stuck
             if (timeOut && (step == 1)) {
                 step = -1;
-                mySerial.send("        " + cntrlZ);
+                mySerial.send("        " + CNTRLZ);
             }
 
             //read incoming string
@@ -171,7 +173,7 @@ public class Sender implements Runnable {
                                 //use default SMS Center
                                 csca = result.substring(n + 6, result.indexOf(",")).trim();
                                 csca = csca.replace("\"","");
-                                logger.info("csca variable set to " + csca);
+                                LOGGER.info("csca variable set to " + csca);
                             }
 
                             if (csca == null || "".equals(csca)) {
@@ -185,7 +187,7 @@ public class Sender implements Runnable {
                                     //pdu.setSmscInfoLength(1+(csca.length()/2));
                                     //pdu.setSmscAddress(csca);
                                     pduString = pdugen.generatePduList(pdu, msgRef);
-                                    logger.info("PDU Strings count " + (pduString == null ? 0 : pduString.size()));
+                                    LOGGER.info("PDU Strings count " + (pduString == null ? 0 : pduString.size()));
             
                                 } else {
                                     mySerial.send("at+csca=\"" + csca + "\"");
@@ -203,7 +205,7 @@ public class Sender implements Runnable {
                         //log("received ok =" + expectedResult);
                         if (expectedResult > -1) {
                             if(usePDUMode) {
-                                logger.info("---Sending message ref: "+ msgRef +" part "+ (currentPduStrIdx+1));
+                                LOGGER.info("---Sending message ref: "+ msgRef +" part "+ (currentPduStrIdx+1));
                                 int pdulength = pduString.get(currentPduStrIdx).length();
                                 mySerial.send("at+cmgs="  + ((int)(pdulength/2) - 1));
                             }
@@ -222,9 +224,9 @@ public class Sender implements Runnable {
                         if (expectedResult > -1) {
                             if(usePDUMode) {
                                 String pduStr = pduString.get(currentPduStrIdx);
-                                mySerial.send(pduStr + cntrlZ);
+                                mySerial.send(pduStr + CNTRLZ);
                             } else
-                                mySerial.send(message + cntrlZ);
+                                mySerial.send(message + CNTRLZ);
                             startTime = (new Date()).getTime();
                         } else {
                             step = step - 1;
@@ -250,7 +252,7 @@ public class Sender implements Runnable {
                                     currentPduStrIdx = currentPduStrIdx + 1;
                                     if(!pduString.isEmpty() && currentPduStrIdx <  pduString.size() )
                                     {
-                                        logger.info("---Sending message ref: "+ msgRef +" part "+ (currentPduStrIdx+1));
+                                        LOGGER.info("---Sending message ref: "+ msgRef +" part "+ (currentPduStrIdx+1));
                                         int pdulength = pduString.get(currentPduStrIdx).length();
 
                                         mySerial.send("at+cmgs="  + ((int)(pdulength/2) - 1));
@@ -272,7 +274,7 @@ public class Sender implements Runnable {
 
                 Thread.sleep(100);
 
-            } catch (Exception e) {
+            } catch (InterruptedException | NumberFormatException e) {
             }
         }
 
@@ -291,6 +293,6 @@ public class Sender implements Runnable {
      */
     private void log(String s) {
         //System.out.println (new java.util.Date()+":"+this.getClass().getName()+":"+s);
-        logger.info(s);
+        LOGGER.info(s);
     }
 }

@@ -15,7 +15,7 @@ import my.com.zulsoft.sms.sender.client.SMSClient;
 import my.com.zulsoft.sms.sender.server.SmsSenderServer;
 import java.io.IOException;
 import java.sql.SQLException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,10 +25,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import org.apache.logging.log4j.LogManager;
 
 public class SmsSender {
 
-    private static final Logger logger = Logger.getLogger("com.fsc.sm.smssender");
+    private static final Logger LOGGER = LogManager.getLogger("com.fsc.sm.smssender");
     private final DBConnection dbconn;
     private final SMSClient smsclient;
     private final Properties param;
@@ -38,33 +39,29 @@ public class SmsSender {
         param = p;
         dbconn = new DBConnection(p);
         smsclient = new SMSClient(SMSClient.SYNCHRONOUS);
-        smsclient.addChangeListener(new SMSSendStatusChangeListener() {
-            public void sendStatusChanged(SMSSendStatusChangeEvent e) {
-
-                HashMap data = e.getResult();
-                String status = (String) data.get("status");
-                String id = (String) data.get("id");
-
-                if (Integer.parseInt(status) == 0) {
-                    //update to 'Y'
-                    String lSqlUpd = param.getProperty("query_update_smshist");
-                    logger.info("Getting sql query: " + lSqlUpd);
-                    try {
-                        HashMap p = new HashMap();
-                        p.put("1", id);
-                        int updtCnt = dbconn.scalaQuery(lSqlUpd, p);
-                        if (updtCnt <= 0) {
-                            logger.error("Can't update SMS History for Id " + id);
-                        }
-                    } catch (SQLException ex) {
-                        logger.info(ex.getMessage(), ex);
+        smsclient.addChangeListener((SMSSendStatusChangeEvent e) -> {
+            HashMap data = e.getResult();
+            String status = (String) data.get("status");
+            String id = (String) data.get("id");
+            if (Integer.parseInt(status) == 0) {
+                //update to 'Y'
+                String lSqlUpd = param.getProperty("query_update_smshist");
+                LOGGER.info("Getting sql query: " + lSqlUpd);
+                try {
+                    HashMap p1 = new HashMap();
+                    p1.put("1", id);
+                    int updtCnt = dbconn.scalaQuery(lSqlUpd, p1);
+                    if (updtCnt <= 0) {
+                        LOGGER.error("Can't update SMS History for Id " + id);
                     }
-                } else {
-                    logger.error("SMS Sending Error for SMS History Id " + id);
+                }catch (SQLException ex) {
+                    LOGGER.info(ex.getMessage(), ex);
                 }
-                logger.info("Send SMS Id " + id + " with Status " + (status.equals("0") ? "OK" : "Failed"));
-                sendStatus = Integer.parseInt(status);
+            } else {
+                LOGGER.error("SMS Sending Error for SMS History Id " + id);
             }
+            LOGGER.info("Send SMS Id " + id + " with Status " + (status.equals("0") ? "OK" : "Failed"));
+            sendStatus = Integer.parseInt(status);
         });
     }
 
@@ -72,7 +69,7 @@ public class SmsSender {
 
         //this.param = p; //store current parameter
         String sql = param.getProperty("query_by_id"); //get sql statement in property files
-        logger.info("Getting sql query: " + sql);
+        LOGGER.info("Getting sql query: " + sql);
         HashMap mp = new HashMap();
         mp.put("1", smsmshist_id);
         ArrayList<HashMap> rset = dbconn.query(sql, mp);
@@ -87,15 +84,15 @@ public class SmsSender {
                 HashMap m = (HashMap) rset.get(0);
                 mobileNum = (String) m.get(1); //MOBILE_PHONE
                 message = (String) m.get(2); // SMSMSHIST_MESSAGE
-                logger.info("mobile_Number=" + mobileNum);
-                logger.info("message=" + message);
+                LOGGER.info("mobile_Number=" + mobileNum);
+                LOGGER.info("message=" + message);
                 message = message.replace("\\r\\n", String.valueOf(((char) 13)));
                 if (mobileNum == null || "".equals(mobileNum)) {
-                    logger.warn("Mobile Number not found for SMS History Id " + smsmshist_id);
+                    LOGGER.warn("Mobile Number not found for SMS History Id " + smsmshist_id);
                     return;
                 }
             } else {
-                logger.info("To Many SMSHistory data for id " + smsmshist_id);
+                LOGGER.info("To Many SMSHistory data for id " + smsmshist_id);
                 return;
             }
 
@@ -119,17 +116,17 @@ public class SmsSender {
         //
         //this.param = p; //store current parameter
         String sql = param.getProperty("query_all_unsend"); //get sql statement in property files
-        logger.info("Getting sql query: " + sql);
+        LOGGER.info("Getting sql query: " + sql);
         String sqlInterval = param.getProperty("query_interval");
-        logger.info("Getting sql query: " + sqlInterval);
+        LOGGER.info("Getting sql query: " + sqlInterval);
         //get interval
         int interval = 0;
         ArrayList<HashMap> rset = dbconn.query(sqlInterval, null);
         if (rset.size() == 1) {
             HashMap mf = rset.get(0);
-            Object obj = mf.get(new Integer(1));
+            Object obj = mf.get(1);
             if (obj == null) {
-                logger.warn("Can't find Interval value in GNPARAMETER table");
+                LOGGER.warn("Can't find Interval value in GNPARAMETER table");
                 return;
             }
 
@@ -139,7 +136,7 @@ public class SmsSender {
                 interval = Integer.parseInt(((String) obj));
             }
         }
-        logger.warn("Get Interval from DB " + interval);
+        LOGGER.warn("Get Interval from DB " + interval);
         HashMap mIn = new HashMap();
         //get current date and format it as string
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -157,29 +154,29 @@ public class SmsSender {
             int rCnt = rset.size();
             for (int c = 0; c < rCnt; c++) {
                 HashMap m = (HashMap) rset.get(c);
-                smsmshist_id = ((BigDecimal) m.get(new Integer(1))).toPlainString(); //SMSMSHIST_ID
-                mobileNum = (String) m.get(new Integer(2)); //MOBILE_PHONE
-                message = (String) m.get(new Integer(3)); //SMSMSHIST_MESSAGE
+                smsmshist_id = ((BigDecimal) m.get(1)).toPlainString(); //SMSMSHIST_ID
+                mobileNum = (String) m.get(2); //MOBILE_PHONE
+                message = (String) m.get(3); //SMSMSHIST_MESSAGE
                 message = message.replace("\\r\\n", String.valueOf(((char) 13)));
                 if (mobileNum == null || "".equals(mobileNum)) {
-                    logger.warn("Mobile Number not found for SMS History Id " + smsmshist_id);
+                    LOGGER.warn("Mobile Number not found for SMS History Id " + smsmshist_id);
                     continue;
                 }
 
                 Runtime r = Runtime.getRuntime();
                 try {
                     Process p = r.exec("java -jar smssender.jar " + smsmshist_id, null);
-                    logger.info("Creating Process : " + p.toString());
+                    LOGGER.info("Creating Process : " + p.toString());
                     int exitVal = p.waitFor();
-                    logger.info("Finished Process with exit code: " + exitVal);
+                    LOGGER.info("Finished Process with exit code: " + exitVal);
 
-                } catch (IOException ex) {
-                    //java.util.logging.Logger.getLogger(SmsSenderWorker.class.getName()).log(Level.SEVERE, null, ex);
-                    logger.info(ex.getLocalizedMessage());
-                } catch (InterruptedException ie) {
-                    //java.util.logging.Logger.getLogger(SmsSenderWorker.class.getName()).log(Level.SEVERE, null, ie);
-                    logger.info(ie.getLocalizedMessage());
+                } catch (IOException | InterruptedException ex) {
+                    //java.util.logging.LogManager.getLogger(SmsSenderWorker.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.info(ex.getLocalizedMessage());
                 }
+                //java.util.logging.LogManager.getLogger(SmsSenderWorker.class.getName()).log(Level.SEVERE, null, ie);
+                //check database if msssage has been send
+                
                 //check database if msssage has been send
 
                 String sqls = "SELECT SEND_IND FROM SMSMSHIST WHERE SMSMSHIST_ID=?";
@@ -191,14 +188,14 @@ public class SmsSender {
                         if (rsets.size() == 1) {
                             HashMap map = rsets.get(0);
                             String send_ind = (String) map.get(new Integer(1));
-                            logger.info("Send Indicator for SMSMSHIST_ID " + smsmshist_id + " = " + send_ind);
+                            LOGGER.info("Send Indicator for SMSMSHIST_ID " + smsmshist_id + " = " + send_ind);
                             if ("Y".equals(send_ind)) {
                                 sendCnt = sendCnt + 1;
                             }
                         }
                     }
                 } catch (SQLException sqle) {
-                    logger.info(sqle.getLocalizedMessage());
+                    LOGGER.info(sqle.getLocalizedMessage());
                 }
                 /*
                  param.put("id", smsmshist_id);
@@ -212,8 +209,8 @@ public class SmsSender {
 
             }
         }
-        logger.info("Total SMS Message " + rset.size());
-        logger.info("Total SMS Message Send" + sendCnt);
+        LOGGER.info("Total SMS Message " + rset.size());
+        LOGGER.info("Total SMS Message Send" + sendCnt);
 
     }
 
@@ -225,31 +222,35 @@ public class SmsSender {
             //check properties files for default options
             Properties p = new Properties();
             p.load(new FileInputStream(new File("smssender.properties")));
-            if (args.length == 1) {
-                if ("server".equalsIgnoreCase(args[0])) {
-                    SmsSenderServer senderServer = new SmsSenderServer(p);
-                    senderServer.start();
-                } else {
+            switch (args.length) {
+                case 1:
+                    if ("server".equalsIgnoreCase(args[0])) {
+                        SmsSenderServer senderServer = new SmsSenderServer(p);
+                        senderServer.start();
+                    } else {
+                        sender = new SmsSender(p);
+                        sender.sendMessageById(args[0]);
+                    }   break;
+                case 2:
+                    if ("config".equals(args[0])) {
+                        SMSSenderDBConfigurator.doConfig(p, args[1]);
+                    }   break;
+                case 0:
+                    //run by checking unsend item and send it
                     sender = new SmsSender(p);
-                    sender.sendMessageById(args[0]);
-                }
-            } else if (args.length == 2) {
-                if ("config".equals(args[0])) {
-                    SMSSenderDBConfigurator.doConfig(p, args[1]);
-                }
-            } else if (args.length == 0) {
-                //run by checking unsend item and send it
-                sender = new SmsSender(p);
-                sender.sendUnsendMessage();
+                    sender.sendUnsendMessage();
+                    break;
+                default:
+                    break;
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             try {
                 if (sender != null) {
                     sender.close();
                 }
             } catch (SQLException ex) {
-                logger.info(ex.getMessage());
+                LOGGER.info(ex.getMessage());
             }
         }
         try {
@@ -257,7 +258,7 @@ public class SmsSender {
                 sender.close();
             }
         } catch (SQLException ex) {
-            logger.info(ex.getMessage(), ex);
+            LOGGER.info(ex.getMessage(), ex);
         }
         System.exit(0);
     }

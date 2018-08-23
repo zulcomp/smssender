@@ -6,7 +6,6 @@
 
 package my.com.zulsoft.sms.sender.common.db;
 
-import my.com.zulsoft.sms.sender.common.db.DBConnection;
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.Inet4Address;
@@ -174,7 +173,7 @@ public class SMSSenderDBConfigurator {
                     dbc.closeConnection();
                 }
             } catch (SQLException ex) {
-                //java.util.logging.Logger.getLogger(SmsSender.class.getName()).log(Level.SEVERE, null, ex);
+                //java.util.logging.LogManager.getLogger(SmsSender.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.exit(-1);
         } finally {
@@ -183,7 +182,7 @@ public class SMSSenderDBConfigurator {
                     dbc.closeConnection();
                 }
             } catch (SQLException ex) {
-                //java.util.logging.Logger.getLogger(SmsSender.class.getName()).log(Level.SEVERE, null, ex);
+                //java.util.logging.LogManager.getLogger(SmsSender.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
