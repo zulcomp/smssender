@@ -5,12 +5,11 @@
  * @author Faizul Ngsrimin
  * @version 1.00 2012/11/19
  */
-package my.com.zulsoft.sms.smssender;
+package my.com.zulsoft.sms.sender;
 
 import my.com.zulsoft.sms.sender.common.db.SMSSenderDBConfigurator;
 import my.com.zulsoft.sms.sender.client.SMSSendStatusChangeEvent;
 import my.com.zulsoft.sms.sender.common.db.DBConnection;
-import my.com.zulsoft.sms.sender.client.SMSSendStatusChangeListener;
 import my.com.zulsoft.sms.sender.client.SMSClient;
 import my.com.zulsoft.sms.sender.server.SmsSenderServer;
 import java.io.IOException;

@@ -9,7 +9,6 @@ import my.com.zulsoft.sms.sender.common.Sender;
 import my.com.zulsoft.sms.sender.common.SerialParameters;
 import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.HashMap;
 import java.util.ListIterator;
@@ -18,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 public class SMSClient implements Runnable
 {
     private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.sender.client");
-    private final ArrayList changeListenerObj;
+    private final ArrayList<SMSSendStatusChangeListener> changeListenerObj;
     public final static int SYNCHRONOUS = 0;
     public final static int ASYNCHRONOUS = 1;
     private Thread myThread = null;
@@ -32,14 +31,14 @@ public class SMSClient implements Runnable
 
     public SMSClient(int mode) {
         this.mode = mode;
-        changeListenerObj = new ArrayList();
+        changeListenerObj = new ArrayList<>();
     }
 
     public int sendMessageAndBlock(String recipient, String message, Properties pSend) {
         status = -1;
         //get all listener object and remove all SMSSendStatusChangeListener
-        Object[] l = changeListenerObj.toArray();
-        changeListenerObj.removeAll(changeListenerObj);
+        //Object[] l = changeListenerObj.toArray();
+        //changeListenerObj.removeAll(changeListenerObj);
         //logger.info("Is changeListenerObj empty? " + changeListenerObj.isEmpty());
         this.recipient = recipient;
         this.message = message;
@@ -77,7 +76,7 @@ public class SMSClient implements Runnable
             }
         }
 
-        changeListenerObj.addAll(Arrays.asList(l));
+        //changeListenerObj.addAll(Arrays.asList(l));
 
         return status;
     }
@@ -147,7 +146,7 @@ public class SMSClient implements Runnable
         //} while(retry !=3);
         this.status = aSender.status;
         aSender = null;
-        fireStatusChange();
+        if(mode == ASYNCHRONOUS)fireStatusChange();
     }
 
     public void addChangeListener(SMSSendStatusChangeListener cl) {
@@ -159,15 +158,15 @@ public class SMSClient implements Runnable
     }
 
     private void fireStatusChange() {
-        HashMap mp = new HashMap();
+        HashMap<String, String> mp = new HashMap<String, String>();
         mp.put("status", String.valueOf(this.status));
         mp.put("id", this.id);
         mp.put("messageNo", String.valueOf(messageNo));
         
         SMSSendStatusChangeEvent e = new SMSSendStatusChangeEvent(this, mp);
-        ListIterator li = changeListenerObj.listIterator();
+        ListIterator<SMSSendStatusChangeListener> li = changeListenerObj.listIterator();
         while (li.hasNext()) {
-            ((SMSSendStatusChangeListener) li.next()).sendStatusChanged(e);
+            li.next().sendStatusChanged(e);
         }
     }
 }
