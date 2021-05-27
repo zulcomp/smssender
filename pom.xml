@@ -17,7 +17,7 @@
 		<java.version>1.8</java.version>
 		<junit.version>4.13.1</junit.version>
 		<hamcrest.version>2.2</hamcrest.version>
-		<mysql.connector.version>8.0.20</mysql.connector.version>
+		<mysql.connector.version>8.0.25</mysql.connector.version>
 		<log4j.version>2.13.3</log4j.version>
 		<nrjavaserial.version>5.2.1</nrjavaserial.version>
 		<jetty-server.version>9.4.39</jetty-server.version>
