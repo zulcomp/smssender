@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 
-package io.github.zulcomp.sms.sender.common.db;
+package io.github.zulcomp.sms.sender.setup;
+
+import io.github.zulcomp.sms.sender.common.db.DBConnection;
 
 import java.io.File;
 import java.math.BigDecimal;

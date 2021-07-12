@@ -10,6 +10,7 @@ package io.github.zulcomp.sms.sender.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.util.TooManyListenersException;
 import gnu.io.CommDriver;
 import gnu.io.CommPortIdentifier;
@@ -64,7 +65,7 @@ public class SerialConnection implements SerialPortEventListener,
 
     Gives a timeout of 30 seconds on the portOpen to allow other applications
     to reliquish the port if have it open and no longer need it.
-     * @throws my.com.zulsoft.sms.sender.common.SerialConnectionException
+     * @throws io.github.zulcomp.sms.sender.common.SerialConnectionException
      * @throws java.lang.ClassNotFoundException
      * @throws java.lang.InstantiationException
      * @throws java.lang.IllegalAccessException
@@ -73,7 +74,7 @@ public class SerialConnection implements SerialPortEventListener,
 	
         //String driverName = "com.sun.comm.Win32Driver"; 
 	String driverName = "gnu.io.RXTXCommDriver"; 
-        CommDriver commDriver = (CommDriver)Class.forName(driverName).newInstance();
+        CommDriver commDriver = (CommDriver) Class.forName(driverName).newInstance();
         commDriver.initialize();
 
         // Obtain a CommPortIdentifier object for the port you want to open.
@@ -148,7 +149,7 @@ public class SerialConnection implements SerialPortEventListener,
     Sets the connection parameters to the setting in the parameters object.
     If set fails return the parameters object to original settings and
     throw exception.
-     * @throws my.com.zulsoft.sms.sender.common.SerialConnectionException
+     * @throws io.github.zulcomp.sms.sender.common.SerialConnectionException
      */
     public void setConnectionParameters() throws SerialConnectionException {
 

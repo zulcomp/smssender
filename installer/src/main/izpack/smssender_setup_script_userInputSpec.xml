@@ -1,0 +1,73 @@
+<izpack:userinput version="5.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:izpack="http://izpack.org/schema/userinput"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.0/izpack-userinput-5.0.xsd">
+    <panel id="UserInputPanel.0">
+        <field type="staticText" align="left" txt="Enter the Information required to connect to your proxy" id="input.title"/>
+        <field type="text" variable="proxyaddress">
+            <spec txt="Proxy Host:" id="input.proxy" size="25" set=""/>
+        </field>
+        <field type="text" variable="proxyPort">
+            <spec txt="Proxy Port:" id="input.port" size="6" set=""/>
+        </field>
+        <field type="text" variable="proxyUsername">
+            <spec txt="Proxy Username:" id="input.username" size="20" set=""/>
+        </field>
+        <field type="password" variable="proxyPassword">
+            <spec>
+                <pwd txt="Proxy Password:" size="20" set=""/>
+            </spec>
+        </field>
+    </panel>
+    <panel id="UserInputPanel.1">
+        <field type="staticText" align="left" txt="Enter the Information required to connect to your proxy" id="input.title"/>
+        <field type="text" variable="proxyaddress">
+            <spec txt="Proxy Host:" id="input.proxy" size="25" set=""/>
+        </field>
+        <field type="text" variable="proxyPort">
+            <spec txt="Proxy Port:" id="input.port" size="6" set=""/>
+        </field>
+        <field type="text" variable="proxyUsername">
+            <spec txt="Proxy Username:" id="input.username" size="20" set=""/>
+        </field>
+        <field type="password" variable="proxyPassword">
+            <spec>
+                <pwd txt="Proxy Password:" size="20" set=""/>
+            </spec>
+        </field>
+    </panel>
+    <panel id="UserInputPanel.2">
+        <field type="staticText" align="left" txt="Enter the Information required to connect to your proxy" id="input.title"/>
+        <field type="text" variable="proxyaddress">
+            <spec txt="Proxy Host:" id="input.proxy" size="25" set=""/>
+        </field>
+        <field type="text" variable="proxyPort">
+            <spec txt="Proxy Port:" id="input.port" size="6" set=""/>
+        </field>
+        <field type="text" variable="proxyUsername">
+            <spec txt="Proxy Username:" id="input.username" size="20" set=""/>
+        </field>
+        <field type="password" variable="proxyPassword">
+            <spec>
+                <pwd txt="Proxy Password:" size="20" set=""/>
+            </spec>
+        </field>
+    </panel>
+    <panel id="UserInputPanel.3">
+        <field type="staticText" align="left" txt="Enter the Information required to connect to your proxy" id="input.title"/>
+        <field type="text" variable="proxyaddress">
+            <spec txt="Proxy Host:" id="input.proxy" size="25" set=""/>
+        </field>
+        <field type="text" variable="proxyPort">
+            <spec txt="Proxy Port:" id="input.port" size="6" set=""/>
+        </field>
+        <field type="text" variable="proxyUsername">
+            <spec txt="Proxy Username:" id="input.username" size="20" set=""/>
+        </field>
+        <field type="password" variable="proxyPassword">
+            <spec>
+                <pwd txt="Proxy Password:" size="20" set=""/>
+            </spec>
+        </field>
+    </panel>
+</izpack:userinput>

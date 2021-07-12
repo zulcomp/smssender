@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import oracle.jdbc.pool.OracleDataSource;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.mysql.cj.jdbc.MysqlDataSource;
 
 public class DBConnection {
 
@@ -38,7 +38,7 @@ public class DBConnection {
         p.setProperty("jdbc_url", connstr);
         p.setProperty("dbuser", username);
         p.setProperty("dbpasswd", password);
-        p.setProperty("drivertype", "oracle");
+        p.setProperty("drivertype", drivertype);
         openConnection(p);
     }
 

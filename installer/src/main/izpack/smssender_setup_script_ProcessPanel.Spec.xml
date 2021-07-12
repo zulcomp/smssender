@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<izpack:processing version="5.0"
+                   xmlns:izpack="http://izpack.org/schema/processing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://izpack.org/schema/processing http://izpack.org/schema/5.0/izpack-processing-5.0.xsd">
+
+
+    <job name="Copy Java RXTX Library - windows">
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/scripts/copyrxtx.bat" workingDir="$INSTALL_PATH" />
+    </job>
+    <job name="Copy Java RXTX Library - unix/linux">
+        <os family="unix" />
+        <executefile name="$INSTALL_PATH/scripts/copyrxtx.sh" />
+    </job>
+    <job name="Create Scheduler">
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/scripts/createjob.cmd"/>
+    </job>
+    <job name="Create Cron Job">
+        <os family="unix" />
+        <executefile name="$INSTALL_PATH/scripts/createjob.sh"/>
+    </job>
+
+    <job name="SMS Sender DB config" final="true">
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/scripts/smssender_config.bat"/>
+    </job>
+
+    <job name="SMS Sender DB config" final="true">
+        <os family="unix" />
+        <executefile name="$INSTALL_PATH/scripts/smssender_config.sh"/>
+    </job>
+
+</izpack:processing>

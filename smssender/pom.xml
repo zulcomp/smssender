@@ -9,8 +9,7 @@
   </parent>
     <artifactId>smssender</artifactId>
   <version>${parent.version}</version>
-  <name>smssender</name>
-
+  <name>sms-sender</name>
   <dependencies>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -29,9 +28,18 @@
       <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.github.zulcomp</groupId>
+      <artifactId>common-lib</artifactId>
+    </dependency>
+    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
