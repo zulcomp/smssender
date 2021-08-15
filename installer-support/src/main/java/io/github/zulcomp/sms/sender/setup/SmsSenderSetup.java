@@ -8,6 +8,7 @@ public class SmsSenderSetup
     public static void main( String[] args )
     {
         Properties properties = new Properties();
-        SMSSenderDBConfigurator.doConfig(properties,args[0]);
+        //get from environment variable or populated from args[1],args[2]....
+        System.exit(SMSSenderDBConfigurator.doConfig(properties,args[0]));
     }
 }

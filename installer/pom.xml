@@ -30,18 +30,61 @@
     </dependency>
   </dependencies>
   <build>
+    <finalName>${project.name}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.codehaus.izpack</groupId>
         <artifactId>izpack-maven-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <mkdirs>true</mkdirs>
-        </configuration>
+        <executions>
+          <execution>
+            <id>izpack-gen</id>
+            <phase>package</phase>
+            <goals>
+              <goal>izpack</goal>
+            </goals>
+            <configuration>
+              <mkdirs>true</mkdirs>
+            </configuration>
+          </execution>
+        </executions>
+
       </plugin>
       <plugin>
         <groupId>com.akathist.maven.plugins.launch4j</groupId>
         <artifactId>launch4j-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>l4j-clui</id>
+            <phase>package</phase>
+            <goals>
+              <goal>launch4j</goal>
+            </goals>
+            <configuration>
+              <headerType>console</headerType>
+              <outfile>${project.build.directory}/${project.build.finalName}.exe</outfile>
+              <downloadUrl>http://java.com/download</downloadUrl>
+              <jre>
+                <bundledJre64Bit>false</bundledJre64Bit>
+                <bundledJreAsFallback>false</bundledJreAsFallback>
+                <minVersion>1.8.0</minVersion>
+                <jdkPreference>preferJre</jdkPreference>
+                <runtimeBits>64</runtimeBits>
+              </jre>
+              <versionInfo>
+                <fileVersion>1.0.0.0</fileVersion>
+                <txtFileVersion>${project.version}</txtFileVersion>
+                <fileDescription>${project.name}</fileDescription>
+                <copyright>(C) 2021</copyright>
+                <productVersion>${project.version}</productVersion>
+                <txtProductVersion>${project.version}</txtProductVersion>
+                <productName>${project.name}</productName>
+                <internalName>AppName</internalName>
+                <originalFilename>${project.build.finalName}.exe</originalFilename>
+              </versionInfo>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
