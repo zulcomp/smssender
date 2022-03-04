@@ -8,7 +8,6 @@
     <version>1.0.0</version>
   </parent>
   <artifactId>installer</artifactId>
-  <version>${parent.version}</version>
   <name>sms-sender-installer</name>
 
   <!-- Launch IzPack automatically -->
@@ -21,12 +20,12 @@
     <dependency>
       <groupId>io.github.zulcomp</groupId>
       <artifactId>installer-support</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>io.github.zulcomp</groupId>
-      <artifactId>smssender</artifactId>
-      <version>${parent.version}</version>
+      <artifactId>sms-sender</artifactId>
+      <version>${project.parent.version}</version>
     </dependency>
   </dependencies>
   <build>

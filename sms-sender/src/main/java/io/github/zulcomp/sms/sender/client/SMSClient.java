@@ -7,39 +7,36 @@ package io.github.zulcomp.sms.sender.client;
 
 import io.github.zulcomp.sms.sender.common.Sender;
 import io.github.zulcomp.sms.sender.common.SerialParameters;
-import org.apache.logging.log4j.Logger;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.HashMap;
-import java.util.ListIterator;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
 
 public class SMSClient implements Runnable
 {
     private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.sender.client");
     private final ArrayList<SMSSendStatusChangeListener> changeListenerObj;
-    public final static int SYNCHRONOUS = 0;
-    public final static int ASYNCHRONOUS = 1;
+    public static final  int SYNCHRONOUS = 0;
+    public static final  int ASYNCHRONOUS = 1;
     private Thread myThread = null;
-    private int mode = -1;
+    private final int mode;
     private String recipient = null;
     private String message = null;
     private SerialParameters serialParam = null;
     private String id;
-    public int status = -1;
-    public long messageNo = -1;
+    private int status = -1;
+    private long messageNo = -1;
 
     public SMSClient(int mode) {
         this.mode = mode;
         changeListenerObj = new ArrayList<>();
     }
 
-    public int sendMessageAndBlock(String recipient, String message, Properties pSend) {
+    public int sendMessageAndBlock(String recipient, String message, Properties pSend) throws InterruptedException {
         status = -1;
         //get all listener object and remove all SMSSendStatusChangeListener
-        //Object[] l = changeListenerObj.toArray();
-        //changeListenerObj.removeAll(changeListenerObj);
-        //logger.info("Is changeListenerObj empty? " + changeListenerObj.isEmpty());
         this.recipient = recipient;
         this.message = message;
         this.id = pSend.getProperty("id"); 
@@ -61,22 +58,14 @@ public class SMSClient implements Runnable
         myThread = new Thread(this);
         myThread.start();
         
-        //while(status == -1)
         while(true)
         {
-            try {
-                myThread.join();
-            } catch (InterruptedException ex) {
-                
-            }
-
+            myThread.join();
             if(!myThread.isAlive()) {
                 myThread = null;
                 break;
             }
         }
-
-        //changeListenerObj.addAll(Arrays.asList(l));
 
         return status;
     }
@@ -106,12 +95,7 @@ public class SMSClient implements Runnable
     public void run() {
 
         Sender aSender = new Sender(recipient, message, serialParam, null);
-        //int retry=0;
-        //do {
             try {
-        //        int timeoutRetry=3;
-        //        do {
-                    //send message
                     aSender.send();
 
                     //in SYNCHRONOUS mode wait for return : 0 for OK, -2 for timeout, -1 for other errors
@@ -124,28 +108,10 @@ public class SMSClient implements Runnable
                         messageNo = aSender.messageNo;
                     }
 
-                    if(aSender.status==-2) {
-          //              timeoutRetry = timeoutRetry - 1;
-          //              logger.info("Timeout! Retry sending!!");
-         //               Thread.sleep(1000);
-                    }
-           //     } while(timeoutRetry !=0 && aSender.status == -2);
-           //     break;
             } catch (Exception e) {
                 LOGGER.info(e.getMessage());
-        //        if(e instanceof SerialConnectionException) {
-        //            logger.info("Unable to open port. Retry sending!!");
-        //            retry+=1;
-        //            try {
-        //                Thread.sleep(1000);
-        //            } catch (InterruptedException ex) {
-                        //ignore exception
-        //            }
-               // }
             }
-        //} while(retry !=3);
         this.status = aSender.status;
-        aSender = null;
         if(mode == ASYNCHRONOUS) fireStatusChange();
     }
 
@@ -158,7 +124,7 @@ public class SMSClient implements Runnable
     }
 
     private void fireStatusChange() {
-        HashMap<String, String> mp = new HashMap<String, String>();
+        HashMap<String, String> mp = new HashMap<>();
         mp.put("status", String.valueOf(this.status));
         mp.put("id", this.id);
         mp.put("messageNo", String.valueOf(messageNo));

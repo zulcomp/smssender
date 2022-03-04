@@ -267,8 +267,9 @@ public class SerialParameters {
                 return "7";
             case SerialPort.DATABITS_8:
                 return "8";
+            default:
+                return "8";
         }
-        return "8";
     }
 
     /**
@@ -319,8 +320,9 @@ public class SerialParameters {
                 return "1.5";
             case SerialPort.STOPBITS_2:
                 return "2";
+            default:
+                return "1";
         }
-        return "1";
     }
 
     /**
@@ -371,8 +373,9 @@ public class SerialParameters {
                 return "Even";
             case SerialPort.PARITY_ODD:
                 return "Odd";
+            default:
+                return "None";
         }
-        return "None";
     }
 
     /**
@@ -420,7 +423,8 @@ public class SerialParameters {
                 return "RTS/CTS In";
             case SerialPort.FLOWCONTROL_RTSCTS_OUT:
                 return "RTS/CTS Out";
+            default:
+                return "None";
         }
-        return "None";
     }
 }

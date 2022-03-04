@@ -4,8 +4,8 @@
  */
 package io.github.zulcomp.sms.sender.client;
 
-import java.util.HashMap;
 import javax.swing.event.ChangeEvent;
+import java.util.Map;
 
 /**
  *
@@ -13,14 +13,14 @@ import javax.swing.event.ChangeEvent;
  */
 public class SMSSendStatusChangeEvent extends ChangeEvent {
 
-    HashMap<String,String> data;
+    Map<String,String> data;
 
-    public SMSSendStatusChangeEvent(Object src, HashMap<String,String> data) {
+    public SMSSendStatusChangeEvent(Object src, Map<String,String> data) {
         super(src);
         this.data = data;
     }
 
-    public HashMap<String,String> getResult() {
+    public Map<String,String> getResult() {
         return data;
     }
 }

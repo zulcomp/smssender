@@ -8,25 +8,16 @@
 package io.github.zulcomp.sms.sender.common.db;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.*;
-
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import oracle.jdbc.OracleConnectionStringBuilder;
-import oracle.jdbc.pool.OracleDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import oracle.jdbc.pool.OracleDataSource;
 
-import javax.sql.DataSource;
+import java.sql.*;
+import java.util.*;
 
 public class DBConnection {
 
     private Connection conn;
-    private DataSource dataSource;
 
     public DBConnection() {
     }
@@ -90,9 +81,13 @@ public class DBConnection {
         return lstResult;
     }
 
-    public void closeConnection() throws SQLException {
+    public void closeConnection() {
         if (conn != null) {
-            conn.close();
+            try {
+                conn.close();
+            } catch (SQLException sqlException) {
+
+            }
             conn = null;
         }
     }
@@ -120,7 +115,6 @@ public class DBConnection {
                 ods.setUser(username);
                 ods.setPassword(password);
                 ods.setDriverType("thin");
-                dataSource = ods;
                 conn = ods.getConnection();
                 break;
             case "mysql":
@@ -128,7 +122,6 @@ public class DBConnection {
                 mcpds.setURL(realConnectionURL);
                 mcpds.setUser(username);
                 mcpds.setPassword(password);
-                dataSource = mcpds;
                 conn = mcpds.getConnection();
                 break;
             case "mssql":
@@ -136,7 +129,6 @@ public class DBConnection {
                 sqlSvrDS.setURL(realConnectionURL);
                 sqlSvrDS.setUser(username);
                 sqlSvrDS.setPassword(password);
-                dataSource = sqlSvrDS;
                 conn = sqlSvrDS.getConnection();
                 break;
             default:

@@ -7,22 +7,15 @@
  */
 package io.github.zulcomp.sms.sender.common;
 
+import gnu.io.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.TooManyListenersException;
-import gnu.io.CommDriver;
-import gnu.io.CommPortIdentifier;
-import gnu.io.CommPortOwnershipListener;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-import gnu.io.UnsupportedCommOperationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
 A class that handles the details of a serial connection. 
@@ -32,13 +25,14 @@ public class SerialConnection implements SerialPortEventListener,
         CommPortOwnershipListener {
 
     private static final Logger LOGGER = LogManager.getLogger("my.com.zulsoft.sms.common");
+    private static final String PORT_OWNER_NAME="SMSSenderApps";
     private final SerialParameters parameters;
     private OutputStream os;
     private InputStream is;
-    private CommPortIdentifier portId;
     private SerialPort sPort;
     private boolean open;
     private String receptionString = "";
+    CommPortIdentifier portId;
 
     public String getIncommingString() {
         byte[] bVal = receptionString.getBytes();
@@ -70,34 +64,29 @@ public class SerialConnection implements SerialPortEventListener,
      * @throws java.lang.InstantiationException
      * @throws java.lang.IllegalAccessException
      */
-    public void openConnection() throws SerialConnectionException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-	
-        //String driverName = "com.sun.comm.Win32Driver"; 
+    public void openConnection() throws SerialConnectionException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+
 	String driverName = "gnu.io.RXTXCommDriver"; 
-        CommDriver commDriver = (CommDriver) Class.forName(driverName).newInstance();
+        CommDriver commDriver = (CommDriver) Class.forName(driverName).getConstructor().newInstance();
         commDriver.initialize();
 
         // Obtain a CommPortIdentifier object for the port you want to open.
+
         try {
             portId = CommPortIdentifier.getPortIdentifier(parameters.getPortName());
         } catch (NoSuchPortException e) {
             throw new SerialConnectionException(e.getMessage());
         }
         // check if this port is already open
-        if(portId.isCurrentlyOwned()) {
-            //if("SMSSenderApps".equals(portId.getCurrentOwner()))
-            //{
-                if(sPort!=null) {
-                    sPort.close();
-                }
-           //}
+        if(portId.isCurrentlyOwned() && PORT_OWNER_NAME.equals(portId.getCurrentOwner()) && sPort != null) {
+                sPort.close();
         }
         // Open the port represented by the CommPortIdentifier object. Give
         // the open call a relatively long timeout of 30 seconds to allow
         // a different application to reliquish the port if the user
         // wants to.
         try {
-            sPort = (SerialPort) portId.open("SMSSenderApps", 30000);
+            sPort = portId.open(PORT_OWNER_NAME, 30000);
         } catch (PortInUseException e) {
             throw new SerialConnectionException(e.getMessage());
         }
@@ -138,9 +127,11 @@ public class SerialConnection implements SerialPortEventListener,
         // input handling.
         try {
             sPort.enableReceiveTimeout(30);
-        } catch (UnsupportedCommOperationException e) {}
+        } catch (UnsupportedCommOperationException e) {
+            LOGGER.error(e.getMessage());
+        }
         // Add ownership listener to allow ownership event handling.
-        //portId.addPortOwnershipListener(this);
+        portId.addPortOwnershipListener(this);
 
         open = true;
     }
@@ -158,7 +149,6 @@ public class SerialConnection implements SerialPortEventListener,
         int oldDatabits = sPort.getDataBits();
         int oldStopbits = sPort.getStopBits();
         int oldParity = sPort.getParity();
-        int oldFlowControl = sPort.getFlowControlMode();
 
         // Set connection parameters, if set fails return parameters object
         // to original state.
@@ -207,7 +197,7 @@ public class SerialConnection implements SerialPortEventListener,
             sPort.close();
 
             // Remove the ownership listener.
-            //portId.removePortOwnershipListener(this);
+            portId.removePortOwnershipListener(this);
         }
 
         open = false;
@@ -238,42 +228,37 @@ public class SerialConnection implements SerialPortEventListener,
      */
     @Override
     public void serialEvent(SerialPortEvent e) {
-        // Create a StringBuffer and int to receive input data.
-        StringBuffer inputBuffer = new StringBuffer();
+        StringBuilder inputBuffer = new StringBuilder();
         int newData = 0;
 
         // Determine type of event.
 
-        switch (e.getEventType()) {
-
-            // Read data until -1 is returned. If \r is received substitute
-            // \n for correct newline handling.
-            case SerialPortEvent.DATA_AVAILABLE:
-                while (newData != -1) {
-                    try {
-                        newData = is.read();
-                        if (newData == -1) {
-                            break;
-                        }
-                        if ('\r' == (char) newData) {
-                            inputBuffer.append('\n');
-                        } else {
-                            inputBuffer.append((char) newData);
-                        }
-                    } catch (IOException ex) {
-                        LOGGER.error(ex.getMessage());
-                        return;
+        int eventType = e.getEventType();// Read data until -1 is returned. If \r is received substitute
+// \n for correct newline handling.
+        if (eventType == SerialPortEvent.DATA_AVAILABLE) {
+            while (newData != -1) {
+                try {
+                    newData = is.read();
+                    if (newData == -1) {
+                        break;
                     }
+                    if ('\r' == (char) newData) {
+                        inputBuffer.append('\n');
+                    } else {
+                        inputBuffer.append((char) newData);
+                    }
+                } catch (IOException ex) {
+                    LOGGER.error(ex.getMessage());
+                    return;
                 }
+            }
 
-                // Append received data to messageAreaIn.
-                receptionString = receptionString + (new String(inputBuffer));
-                break;
+            // Append received data to messageAreaIn.
+            receptionString = receptionString + (new String(inputBuffer));
 
             // If break event append BREAK RECEIVED message.
-            case SerialPortEvent.BI:
-                //receptionString = receptionString + ("\n--- BREAK RECEIVED ---\n");
-                break;
+        } else if (eventType == SerialPortEvent.BI) {
+            receptionString = receptionString + ("\n--- BREAK RECEIVED ---\n");
         }
     }
 
@@ -286,31 +271,22 @@ public class SerialConnection implements SerialPortEventListener,
      */
     @Override
     public void ownershipChange(int type) {
-        
-        if (type == CommPortOwnershipListener.PORT_OWNERSHIP_REQUESTED) {
-        //PortRequestedDialog prd = new PortRequestedDialog(parent);
-            //if(portId.isCurrentlyOwned() )
-           // {
-             //   sPort.close();
-           // }
+
+        if (type == CommPortOwnershipListener.PORT_OWNERSHIP_REQUESTED && portId.isCurrentlyOwned() && !PORT_OWNER_NAME.equals(portId.getCurrentOwner()) && sPort!=null) {
+            sPort.close();
         }
-        
     }
 
-    
+
     public void send(String message) {
         byte[] theBytes = (message + (char)13 + (char)10).getBytes();
         for (int i = 0; i < theBytes.length; i++) {
 
             char newCharacter = (char) theBytes[i];
-            /*if ((int) newCharacter == 10) {
-                newCharacter = '\r';
-            }
-            */
             try {
-                os.write((int) newCharacter);
+                os.write(newCharacter);
             } catch (IOException e) {
-                LOGGER.error("OutputStream write error: " + e.getMessage());
+                LOGGER.error("OutputStream write error: {} ", e.getMessage());
             }
 
         }
