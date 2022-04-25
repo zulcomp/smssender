@@ -21,7 +21,7 @@
 		<hamcrest.version>2.2</hamcrest.version>
 		<mysql.connector.version>8.0.28</mysql.connector.version>
 		<oracle.connector.version>21.5.0.0</oracle.connector.version>
-		<mssql.connector.version>10.2.0.jre8</mssql.connector.version>
+		<mssql.connector.version>11.1.1.jre8-preview</mssql.connector.version>
 		<log4j.version>2.17.2</log4j.version>
 		<nrjavaserial.version>5.2.1</nrjavaserial.version>
 		<jetty-server.version>11.0.9</jetty-server.version>
