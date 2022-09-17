@@ -15,8 +15,12 @@ import oracle.jdbc.pool.OracleDataSource;
 import java.sql.*;
 import java.util.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class DBConnection {
 
+    private Logger logger = LogManager.getLogger(getClass());
     private Connection conn;
 
     public DBConnection() {
@@ -86,7 +90,7 @@ public class DBConnection {
             try {
                 conn.close();
             } catch (SQLException sqlException) {
-
+                logger.debug("SqlException: ", sqlException);
             }
             conn = null;
         }

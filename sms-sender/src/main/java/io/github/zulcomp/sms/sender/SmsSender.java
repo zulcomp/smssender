@@ -60,7 +60,7 @@ public class SmsSender {
         });
     }
 
-    public void sendMessageById(String smsmshistId) throws SQLException {
+    public void sendMessageById(String smsmshistId) throws SQLException, InterruptedException {
 
         //this.param = p; //store current parameter
         String sql = param.getProperty("query_by_id"); //get sql statement in property files
@@ -104,7 +104,7 @@ public class SmsSender {
         smsclient.removeChangeListener(this);
     }
 
-    public void sendUnsendMessage() throws SQLException, ClassNotFoundException, IOException {
+    public void sendUnsendMessage() throws SQLException {
         //
         //this.param = p; //store current parameter
         String sql = param.getProperty("query_all_unsend"); //get sql statement in property files
