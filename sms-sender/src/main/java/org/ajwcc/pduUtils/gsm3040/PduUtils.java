@@ -688,7 +688,7 @@ public class PduUtils
 		return (byte) (((b << 4) & 0xF0) | ((b >>> 4) & 0x0F));
 	}
 
-	@SuppressWarnings("unused")
+	
 	public static String readBCDNumbers(int numDigits, byte[] addressData)
 	{
 		// reads length BCD numbers from the current position
@@ -728,9 +728,8 @@ public class PduUtils
 	public static byte[] stringToUnencodedSeptets(String s)
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		int i, j, k, index;
+		int i, j, index;
 		char ch;
-		k = 0;
 		for (i = 0; i < s.length(); i++)
 		{
 			ch = s.charAt(i);
@@ -744,9 +743,7 @@ public class PduUtils
 			if (index != -1) // An extended char...
 			{
 				baos.write((byte) Integer.parseInt(extBytes[index].substring(0, 2), 16));
-				k++;
 				baos.write((byte) Integer.parseInt(extBytes[index].substring(2, 4), 16));
-				k++;
 			}
 			else
 			// Maybe a standard char...
@@ -757,7 +754,6 @@ public class PduUtils
 					{
 						index = j;
 						baos.write((byte) j);
-						k++;
 						break;
 					}
 				if (index == -1) // Maybe a Greek Char...
@@ -776,7 +772,6 @@ public class PduUtils
 							{
 								index = j;
 								baos.write((byte) j);
-								k++;
 								break;
 							}
 					}
@@ -784,7 +779,6 @@ public class PduUtils
 					// Unknown char replacement...
 					{
 						baos.write((byte) ' ');
-						k++;
 					}
 				}
 			}
