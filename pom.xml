@@ -26,7 +26,7 @@
 		<nrjavaserial.version>5.2.1</nrjavaserial.version>
 		<jetty-server.version>11.0.11</jetty-server.version>
 		<izpack-maven-plugin.version>5.1.3</izpack-maven-plugin.version>
-		<launch4j-maven-plugin.version>2.1.2</launch4j-maven-plugin.version>
+		<launch4j-maven-plugin.version>2.2.0</launch4j-maven-plugin.version>
 		<maven-compiler-plugins.version>3.10.1</maven-compiler-plugins.version>
 		<maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
 		<maven-shade-plugin.version>3.3.0</maven-shade-plugin.version>
