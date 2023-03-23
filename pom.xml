@@ -31,6 +31,7 @@
 		<maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
 		<maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
 		<protobuf.version>3.22.0</protobuf.version>
+		<commons-net.version>3.9.0</commons-net.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -40,9 +41,20 @@
 				<version>${jetty-server.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>commons-net</groupId>
+				<artifactId>commons-net</artifactId>
+				<version>${commons-net.version}</version>
+			</dependency>	
+			<dependency>
 				<groupId>com.neuronrobotics</groupId>
 				<artifactId>nrjavaserial</artifactId>
 				<version>${nrjavaserial.version}</version>
+				<exclusions>
+					<exclusion>
+					<artifactId>commons-net</artifactId>
+					<groupId>commons-net</groupId>
+					</exclusion>
+				</exclusions>	
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
