@@ -1,2 +1,2 @@
 SET PATH=${jre_install}\bin;%PATH%;
-java -jar
+java -jar ${smssender_jar} %@
