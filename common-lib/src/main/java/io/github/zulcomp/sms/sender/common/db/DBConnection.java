@@ -49,7 +49,11 @@ public class DBConnection {
             stmt.clearParameters();
             if(param!=null && !param.isEmpty()) {
                 for (String key : param.keySet()) {
-                    stmt.setObject(Integer.parseInt(key), param.get(key));
+                    if(param.get(key) != null) {
+                        stmt.setObject(Integer.parseInt(key), param.get(key));
+                    } else {
+                        stmt.setNull(Integer.parseInt(key), Types.VARCHAR);
+                    }
                 }
             }
             stmt.executeUpdate();
@@ -96,7 +100,7 @@ public class DBConnection {
         }
     }
 
-    private void openConnection(Properties connProp) throws SQLException, ClassNotFoundException {
+    private void openConnection(Properties connProp) throws SQLException {
         String connectionString;
         String username;
         String password;
@@ -146,6 +150,6 @@ public class DBConnection {
     }
 
     public boolean isClosed() throws SQLException {
-        return (conn != null ? conn.isClosed() : true);
+        return (conn == null || conn.isClosed());
     }
 }
