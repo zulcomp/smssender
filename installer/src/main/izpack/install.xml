@@ -49,7 +49,6 @@
             <file override="update" src="${RESOURCE_ROOT}/smssender.bat" targetdir="$INSTALL_PATH/">
                 <os family="windows"/>
             </file>
-            <file override="update" src="" targetdir="$INSTALL_PATH/"/>
             <file override="update" src="${RESOURCE_ROOT}/smssender.properties" targetdir="$INSTALL_PATH/"/>
             <file override="update" src="${RESOURCE_ROOT}/smssender.sh" targetdir="$INSTALL_PATH/">
                 <os family="unix"/>
@@ -76,7 +75,9 @@
             <file override="update" src="${RESOURCE_ROOT}/scripts/smssender_config.bat" targetdir="$INSTALL_PATH/scripts/">
                 <os family="windows"/>
             </file>
-
+            <file override="update" src="${RESOURCE_ROOT}/scripts/smssender_config.sh" targetdir="$INSTALL_PATH/scripts/">
+                <os family="unix"/>
+            </file>
             <file override="update" src="${RESOURCE_ROOT}/lib" targetdir="$INSTALL_PATH/"/>
             <file override="update" src="${RESOURCE_ROOT}/rxtx_win/x86/rxtxSerial.dll" targetdir="$INSTALL_PATH/rxtx/">
                 <os family="windows" />

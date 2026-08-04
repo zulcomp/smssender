@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.zulcomp</groupId>
-    <artifactId>smssender-parent</artifactId>
+    <artifactId>smssender</artifactId>
     <version>1.0.0</version>
   </parent>
     <artifactId>sms-sender</artifactId>
@@ -32,8 +32,8 @@
       <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>

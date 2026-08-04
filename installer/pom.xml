@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.zulcomp</groupId>
-    <artifactId>smssender-parent</artifactId>
+    <artifactId>smssender</artifactId>
     <version>1.0.0</version>
   </parent>
   <artifactId>installer</artifactId>
@@ -27,6 +27,12 @@
       <artifactId>sms-sender</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.rxtx</groupId>
+      <artifactId>rxtx</artifactId>
+      <version>2.1.7</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>${project.name}-${project.version}</finalName>
@@ -44,6 +50,33 @@
             </goals>
             <configuration>
               <mkdirs>true</mkdirs>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>io.github.zulcomp</groupId>
+                  <artifactId>installer-support</artifactId>
+                  <version>${project.parent.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${izpack.staging}/lib/</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>io.github.zulcomp</groupId>
+                  <artifactId>sms-sender</artifactId>
+                  <version>${project.parent.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${izpack.staging}/lib/</outputDirectory>
+                </artifactItem>
+                <!-- Copy RXTX dependency -->
+                <artifactItem>
+                    <groupId>org.rxtx</groupId>
+                    <artifactId>rxtx</artifactId>
+                    <version>2.1.7</version>
+                    S<type>jar</type>
+                    <overWrite>true</overWrite>
+                    <outputDirectory>${izpack.staging}/lib/</outputDirectory>
+                </artifactItem>
+              </artifactItems>
             </configuration>
           </execution>
         </executions>

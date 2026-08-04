@@ -27,7 +27,7 @@ import java.util.*;
  */
 public class SMSSenderDBConfigurator {
 
-    private static final Logger LOGGER = LogManager.getLogger("io.github.zulcomp.sms.sender.common");
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String SMS_SENDER_SVR_URL = "SMSSENDER_SVR_URL";
     private static final String SMS_SENDER_PATH = "SMSSENDER_PATH";
